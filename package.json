@@ -17,7 +17,8 @@
     "react-native-vector-icons": "^6.6.0",
     "react-navigation": "^3.11.1",
     "reactotron-react-native": "^3.6.4",
-    "styled-components": "^4.3.2"
+    "styled-components": "^4.3.2",
+    "url-search-params-polyfill": "^7.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",

@@ -13,28 +13,61 @@ import {
   OwnerAvatar,
   Info,
   Title,
-  Author
+  Author,
+  Loading
 } from "./styles";
 
 class User extends Component {
   state = {
-    stars: []
+    stars: [],
+    loading: true,
+    refreshing: false,
+    page: 1
   };
 
   async componentDidMount() {
+    await this.loadStarred();
+  }
+
+  loadStarred = async () => {
     const { navigation } = this.props;
+    const { page, stars } = this.state;
+
     const user = navigation.getParam("user");
 
-    const response = await api.get(`/users/${user.login}/starred`);
+    this.setState({
+      loading: true
+    });
+
+    let params = new URLSearchParams();
+    params.append("page", page);
+
+    const response = await api.get(
+      `/users/${user.login}/starred?${params.toString()}`
+    );
 
     this.setState({
-      stars: response.data
+      stars: [...stars, ...response.data],
+      loading: false,
+      refreshing: false,
+      page: page + 1
     });
-  }
+  };
+
+  refresh = async () => {
+    await this.setState({
+      stars: [],
+      refreshing: true,
+      loading: false,
+      page: 1
+    });
+
+    this.loadStarred();
+  };
 
   render() {
     const { navigation } = this.props;
-    const { stars } = this.state;
+    const { loading, page, refreshing, stars } = this.state;
 
     const user = navigation.getParam("user");
 
@@ -45,6 +78,8 @@ class User extends Component {
           <Name>{user.name}</Name>
           <Bio>{user.bio}</Bio>
         </Header>
+
+        {page === 1 && loading && <Loading />}
 
         <Stars
           data={stars}
@@ -58,6 +93,10 @@ class User extends Component {
               </Info>
             </Starred>
           )}
+          onEndReached={this.loadStarred}
+          onEndReachedThreshold={0.5}
+          onRefresh={this.refresh}
+          refreshing={refreshing}
         />
       </Container>
     );
