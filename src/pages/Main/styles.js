@@ -82,3 +82,10 @@ export const ProfileButtonText = styled.Text`
   color: #fff;
   text-transform: uppercase;
 `;
+
+export const RemoveButton = styled(ProfileButton)`
+  width: 16px;
+  height: 16px;
+  margin-right: 5px;
+  margin-left: auto;
+`;
