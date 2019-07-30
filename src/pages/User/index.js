@@ -29,6 +29,12 @@ class User extends Component {
     await this.loadStarred();
   }
 
+  handleNavigate = repo => {
+    const { navigation } = this.props;
+
+    navigation.navigate("Repo", { repo });
+  };
+
   loadStarred = async () => {
     const { navigation } = this.props;
     const { page, stars } = this.state;
@@ -85,7 +91,7 @@ class User extends Component {
           data={stars}
           keyExtractor={star => String(star.id)}
           renderItem={({ item }) => (
-            <Starred>
+            <Starred onPress={() => this.handleNavigate(item)}>
               <OwnerAvatar source={{ uri: item.owner.avatar_url }} />
               <Info>
                 <Title>{item.name}</Title>
